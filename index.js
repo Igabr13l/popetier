@@ -18,10 +18,7 @@ const scrape = async () => {
 
   await page.setViewport({ width: 1080, height: 1024 });
 
-  await Promise.all([
-    page.waitForSelector('input[name="username"]'),
-    page.waitForSelector('input[name="password"]')
-  ])
+  await page.waitForNavigation({ waitUntil: 'domcontentloaded' })
 
   //login
   await page.type('input[name="username"]', user.username)
@@ -32,7 +29,7 @@ const scrape = async () => {
   // finish login
 
   try {
-    await page.waitForNavigation({ waitUntil: 'networkidle0' })
+    await page.waitForNavigation({ waitUntil: 'domcontentloaded' })
     const exist = await page.evaluate(() => !!document.getElementById('ContentPlaceHolder1_existingApplicationPanel'))
     if (exist) {
       await page.locator(`#ContentPlaceHolder1_applicationList_applicationsDataGrid_deleteHyperlink_${0}`).click()
@@ -44,7 +41,6 @@ const scrape = async () => {
   } catch (error) {
     console.error(error)
   }
-
 
   const countryButton = `#ContentPlaceHolder1_countryRepeater_countryDivFooter_${COUNTRY.GERMANY}`
 
